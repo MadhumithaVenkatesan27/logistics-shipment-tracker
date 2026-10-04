@@ -17,12 +17,12 @@ Users can create, view, edit, delete and filter shipments by status.
 
 ## Architecture / technology
 
-| Layer | Technology |
-| --- | --- |
-| Frontend | React 18, Vite, React Router, Axios, Vitest + React Testing Library, plain CSS |
-| Backend | Java 21, Spring Boot 3.3, Spring Web, Spring Data JPA, Bean Validation, Flyway, JUnit 5, Mockito |
-| Database | PostgreSQL 16 |
-| Runtime | Docker, Docker Compose |
+| Layer    | Technology                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------ |
+| Frontend | React 18, Vite, React Router, Axios, Vitest + React Testing Library, plain CSS                   |
+| Backend  | Java 21, Spring Boot 3.3, Spring Web, Spring Data JPA, Bean Validation, Flyway, JUnit 5, Mockito |
+| Database | PostgreSQL 16                                                                                    |
+| Runtime  | Docker, Docker Compose                                                                           |
 
 Request flow: `React page -> shipmentService.js (Axios) -> ShipmentController -> ShipmentService -> ShipmentRepository -> PostgreSQL`.
 The controller works only with DTOs (`ShipmentRequest` / `ShipmentResponse`); `ShipmentMapper` converts to the `Shipment` entity.
@@ -39,7 +39,7 @@ logistics-shipment-tracker/
 ## Prerequisites
 
 Only **Docker** and **Docker Compose** (v2) are needed to run the app.
-Java, Node.js and PostgreSQL are *not* required when using Docker.
+Java, Node.js and PostgreSQL are _not_ required when using Docker.
 (To run tests outside Docker you need JDK 21 + Maven 3.9+, and Node.js 20+.)
 
 ## Run the complete application
@@ -50,12 +50,12 @@ cd logistics-shipment-tracker
 docker compose up --build
 ```
 
-| Component | URL |
-| --- | --- |
-| Frontend | http://localhost:3000 |
-| Backend API | http://localhost:8080/api/shipments |
+| Component             | URL                                   |
+| --------------------- | ------------------------------------- |
+| Frontend              | http://localhost:3000                 |
+| Backend API           | http://localhost:8080/api/shipments   |
 | Swagger UI (optional) | http://localhost:8080/swagger-ui.html |
-| PostgreSQL | localhost:5432 |
+| PostgreSQL            | localhost:5432                        |
 
 The first build downloads dependencies and can take a few minutes. Wait until the backend log shows `Started ShipmentTrackerApplication`.
 
@@ -70,22 +70,24 @@ docker compose down -v     # stop containers and DELETE the database volume (fre
 
 Everything has a working default, so no `.env` file is needed. To override, copy `.env.example` to `.env`.
 
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `POSTGRES_DB` / `POSTGRES_USER` / `POSTGRES_PASSWORD` | `shipments` / `shipment_user` / `shipment_pass` | Database credentials (local assessment values only) |
-| `CORS_ALLOWED_ORIGINS` | `http://localhost:3000` | Origins allowed to call the API |
-| `VITE_API_BASE_URL` | `http://localhost:8080` | API URL as seen **by the browser**; baked into the frontend at build time |
-| `APP_TIMEZONE` | `UTC` | Time zone used for the "delivery date not earlier than creation date" rule |
+| Variable                                              | Default                                         | Purpose                                                                    |
+| ----------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------- |
+| `POSTGRES_DB` / `POSTGRES_USER` / `POSTGRES_PASSWORD` | `shipments` / `shipment_user` / `shipment_pass` | Database credentials (local assessment values only)                        |
+| `CORS_ALLOWED_ORIGINS`                                | `http://localhost:3000`                         | Origins allowed to call the API                                            |
+| `VITE_API_BASE_URL`                                   | `http://localhost:8080`                         | API URL as seen **by the browser**; baked into the frontend at build time  |
+| `APP_TIMEZONE`                                        | `UTC`                                           | Time zone used for the "delivery date not earlier than creation date" rule |
 
 ## Run the tests
 
 Backend (JUnit 5 + Mockito + H2 in-memory; no PostgreSQL needed):
+
 ```bash
 cd backend
 mvn test
 ```
 
 Frontend (Vitest + React Testing Library):
+
 ```bash
 cd frontend
 npm install
@@ -109,13 +111,13 @@ curl -i -X DELETE http://localhost:8080/api/shipments/1       # 204
 curl -i http://localhost:8080/api/shipments/9999              # 404 JSON error
 ```
 
-| Method | Endpoint | Success |
-| --- | --- | --- |
-| POST | `/api/shipments` | 201 Created (+ `Location` header) |
-| GET | `/api/shipments[?status=...]` | 200 OK |
-| GET | `/api/shipments/{id}` | 200 OK |
-| PUT | `/api/shipments/{id}` | 200 OK |
-| DELETE | `/api/shipments/{id}` | 204 No Content |
+| Method | Endpoint                      | Success                           |
+| ------ | ----------------------------- | --------------------------------- |
+| POST   | `/api/shipments`              | 201 Created (+ `Location` header) |
+| GET    | `/api/shipments[?status=...]` | 200 OK                            |
+| GET    | `/api/shipments/{id}`         | 200 OK                            |
+| PUT    | `/api/shipments/{id}`         | 200 OK                            |
+| DELETE | `/api/shipments/{id}`         | 204 No Content                    |
 
 Error body: `{ "timestamp", "status", "error", "message", "path", "fieldErrors": { "<field>": "<message>" } }` (`fieldErrors` only when relevant).
 
@@ -145,6 +147,11 @@ Error body: `{ "timestamp", "status", "error", "message", "path", "fieldErrors":
 
 ## AI assistance disclosure
 
-> **Edit this section so it is accurate for your own submission.**
-> This project's code was generated with the help of an AI assistant (Claude by Anthropic) from the assignment specification. The AI produced the initial backend, frontend, tests, Docker configuration and this README.
-> I verified it by: reading and understanding the code, running `docker compose up --build`, exercising create / view / edit / filter / delete and the validation and duplicate-tracking-number cases in the browser, and running the backend (`mvn test`) and frontend (`npm test`) test suites.
+I used an AI assistant (Claude by Anthropic) to help generate the initial code for this project from the assignment specification. It helped with the Spring Boot backend, the React frontend, the automated tests, the Docker configuration and this README.
+
+How I verified it:
+
+- Ran the full application with `docker compose up --build` and tested create, view, edit, filter and delete in the browser
+- Tested the duplicate tracking number and past delivery date errors in the UI and directly against the API
+- Ran the backend tests (`mvn test`, 27 tests passing) and the frontend tests (`npm test`, 10 tests passing)
+- Read through the code so I can explain the request flow, the use of DTOs and the service layer, and how duplicate tracking numbers are prevented
